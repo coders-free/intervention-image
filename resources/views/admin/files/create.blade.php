@@ -46,7 +46,6 @@
 
             dictDefaultMessage: "Arrastre una imagen al recuadro para subirlo",
             acceptedFiles: "image/*",
-            maxFiles: 4,
         };
     </script>
 @endsection

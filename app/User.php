@@ -36,4 +36,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    //Relacion de uno a muchos
+    public function files(){
+        return $this->hasMany('App\File');
+    }
+
 }

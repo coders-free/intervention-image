@@ -20,7 +20,9 @@ class FileController extends Controller
      */
     public function index()
     {
-        return view('admin.files.index');
+        $files = File::where('user_id', auth()->user()->id)->paginate(24);
+
+        return view('admin.files.index', compact('files'));
     }
 
     /**
@@ -49,9 +51,6 @@ class FileController extends Controller
 
          */
 
-        $request->validate([
-            'file' => 'required|image'
-        ]);
 
         $nombre = Str::random(10) . $request->file('file')->getClientOriginalName();
         
@@ -64,7 +63,8 @@ class FileController extends Controller
                 ->save($ruta);
 
         File::create([
-            'url' => '/storage/imagenes/' . $nombre
+            'user_id' => auth()->user()->id,
+            'url' => 'storage/imagenes/' . $nombre
         ]);
     }
 
@@ -108,8 +108,12 @@ class FileController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($file)
+    public function destroy(File $file)
     {
-        //
+        $url = str_replace('storage', 'public', $file->url);
+        Storage::delete($url);
+
+        $file->delete();
+        return redirect()->route('admin.files.index')->with('eliminar', 'ok');
     }
 }

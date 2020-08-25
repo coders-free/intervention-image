@@ -13,12 +13,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index');
 
 Auth::routes();
 
-Route::get('/admin', 'Admin\HomeController@index')->name('admin.home');
 
-Route::resource('/admin/files', 'Admin\FileController')->names('admin.files');
+Route::group(['prefix' => 'admin', 'namespace' => 'Admin', 'middleware' => 'auth'], function () {
+    Route::get('/', 'HomeController@index')->name('admin.home');
+    Route::resource('files', 'FileController')->names('admin.files');
+});
+
+
